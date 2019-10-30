@@ -155,16 +155,17 @@ expressions_load([_ | L], Id, Expressions,
 expressions_load(L, ProcessIndex, ProcessCount) ->
     expressions_load(L, 1, #{}, 0, ProcessIndex, ProcessCount).
 
-expression_next(Id, DateTime, Cron, Service) ->
+expression_next(Id, Cron, Service, UseUTC) ->
+    AbsoluteNow = cloudi_timestamp:milliseconds_monotonic(),
+    {DateTime, PastMilliSeconds} = datetime_now(UseUTC),
     DateTimeEvent = cloudi_cron:next_datetime(DateTime, Cron),
     Seconds = datetime_difference(DateTimeEvent, DateTime),
-    Absolute = cloudi_timestamp:milliseconds_monotonic() + Seconds * 1000,
-    erlang:send_after(Absolute, Service, {expression, Id}, [{abs, true}]).
+    erlang:send_after(AbsoluteNow + Seconds * 1000 - PastMilliSeconds,
+                      Service, {expression, Id}, [{abs, true}]).
 
 expressions_start(Expressions, Service, UseUTC) ->
     maps:map(fun(Id, #expression{definition = Cron} = Expression) ->
-        DateTime = datetime_now(UseUTC),
-        Timer = expression_next(Id, DateTime, Cron, Service),
+        Timer = expression_next(Id, Cron, Service, UseUTC),
         Expression#expression{timer = Timer}
     end, Expressions).
 
@@ -172,11 +173,10 @@ expression_event(Expressions, Sends, Id, Service, UseUTC, Dispatcher) ->
     Expression = maps:get(Id, Expressions),
     #expression{definition = Cron,
                 send_args = [SendArgsName | _] = SendArgs} = Expression,
-    ?LOG_INFO("~n\"~s\" event sent to ~s",
-              [cloudi_cron:expression(Cron), SendArgsName]),
+    ?LOG_TRACE("\"~s\" event sent to ~s",
+               [cloudi_cron:expression(Cron), SendArgsName]),
     TransId = event_send(SendArgs, Service, Dispatcher),
-    DateTime = datetime_now(UseUTC),
-    Timer = expression_next(Id, DateTime, Cron, Service),
+    Timer = expression_next(Id, Cron, Service, UseUTC),
     {maps:put(Id, Expression#expression{timer = Timer}, Expressions),
      maps:put(TransId, Id, Sends)}.
 
@@ -198,13 +198,13 @@ event_recv(Result, TransId, Expressions, Sends) ->
                 send_args = [SendArgsName | _]} = Expression,
     if
         Result =:= ok ->
-            ?LOG_TRACE("~n\"~s\" event completed at ~s",
+            ?LOG_TRACE("\"~s\" event completed at ~s",
                        [cloudi_cron:expression(Cron), SendArgsName]);
         Result =:= timeout ->
-            ?LOG_ERROR("~n\"~s\" event timeout at ~s",
+            ?LOG_ERROR("\"~s\" event timeout at ~s",
                        [cloudi_cron:expression(Cron), SendArgsName]);
         Result =:= error ->
-            ?LOG_ERROR("~n\"~s\" event failed at ~s",
+            ?LOG_ERROR("\"~s\" event failed at ~s",
                        [cloudi_cron:expression(Cron), SendArgsName])
     end,
     SendsNew.
@@ -214,6 +214,9 @@ datetime_difference(DateTime1, DateTime0) ->
     calendar:datetime_to_gregorian_seconds(DateTime0).
 
 datetime_now(true) ->
-    calendar:now_to_universal_time(erlang:timestamp());
+    {_, _, MicroSeconds} = Now = erlang:timestamp(),
+    {calendar:now_to_universal_time(Now), MicroSeconds div 1000};
 datetime_now(false) ->
-    calendar:now_to_local_time(erlang:timestamp()).
+    {_, _, MicroSeconds} = Now = erlang:timestamp(),
+    {calendar:now_to_local_time(Now), MicroSeconds div 1000}.
+

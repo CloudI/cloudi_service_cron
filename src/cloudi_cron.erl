@@ -110,7 +110,7 @@
     nonempty_string().
 
 expression(#cloudi_cron{expression_strings = ExpressionStrings}) ->
-    cloudi_string:join(" ", ExpressionStrings).
+    cloudi_string:join(" ", erlang:tuple_to_list(ExpressionStrings)).
 
 %%-------------------------------------------------------------------------
 %% @doc
