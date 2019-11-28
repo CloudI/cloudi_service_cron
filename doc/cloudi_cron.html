@@ -16,7 +16,7 @@
    because they wouldn't work well with Erlang process restarts.
 <p>Copyright © 2019 Michael Truog</p>
 
-<p><b>Version:</b> 1.8.0 Nov 9 2019 19:37:32
+<p><b>Version:</b> 1.8.0 Nov 28 2019 13:43:58
   ------------------------------------------------------------------------</p>
 <p><b>Authors:</b> Michael Truog (<a href="mailto:mjtruog at protonmail dot com"><tt>mjtruog at protonmail dot com</tt></a>).</p>
 
@@ -72,8 +72,8 @@ However, if you specify "1W" as the value for day-of-month, and
 the 1st is a Saturday, the trigger fires on Monday the 3rd,   
 as it does not 'jump' over the boundary of a month's days.</p>
   
-   <p>This implementation allows the W character to be used in a list:   
-1W,15W</p>
+   <p>This implementation allows the W character to be used in a list.   
+For example, "1W,15W" is valid in the day-of-month field.</p>
   
    <p>The W character can be combined with L as LW to mean   
 "the last business day of the month".</p>
