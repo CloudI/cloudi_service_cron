@@ -14,9 +14,9 @@
    <h3><a name="CloudI_Cron_Expression_Functionality">CloudI Cron Expression Functionality</a></h3>
    The special character ? and the @reboot macro are not supported
    because they wouldn't work well with Erlang process restarts.
-<p>Copyright © 2019 Michael Truog</p>
+<p>Copyright © 2019-2020 Michael Truog</p>
 
-<p><b>Version:</b> 1.8.1 Jun 3 2020 19:23:03
+<p><b>Version:</b> 2.0.1 Nov 26 2020 17:53:26
   ------------------------------------------------------------------------</p>
 <p><b>Authors:</b> Michael Truog (<a href="mailto:mjtruog at protonmail dot com"><tt>mjtruog at protonmail dot com</tt></a>).</p>
 
@@ -162,7 +162,7 @@ day-of-week field corresponds to the third Friday of every month.</p>
 
 <h3 class="function"><a name="next_datetime-2">next_datetime/2</a></h3>
 <div class="spec">
-<p><tt>next_datetime(DateTime::<a href="calendar.html#type-datetime">calendar:datetime()</a>, Cloudi_cron::<a href="#type-state">state()</a>) -&gt; <a href="calendar.html#type-datetime">calendar:datetime()</a></tt><br></p>
+<p><tt>next_datetime(DateTime::<a href="calendar.html#type-datetime">calendar:datetime()</a>, Cloudi_cron::<a href="#type-state">state()</a>) -&gt; <a href="calendar.html#type-datetime">calendar:datetime()</a> | undefined</tt><br></p>
 </div><p>
   <h4><a name="Determine_the_next_datetime_based_on_the_cron_expression.">Determine the next datetime based on the cron expression.</a></h4>
 </p>
