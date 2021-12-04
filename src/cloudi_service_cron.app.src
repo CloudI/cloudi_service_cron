@@ -3,7 +3,7 @@
 
 {application, cloudi_service_cron, 
   [{description, "CloudI Cron Service"},
-   {vsn, "2.0.3"},
+   {vsn, "2.0.4"},
    {modules, [
         cloudi_cron,
         cloudi_service_cron
