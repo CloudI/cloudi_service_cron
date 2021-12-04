@@ -16,7 +16,7 @@
    because they wouldn't work well with Erlang process restarts.
 <p>Copyright © 2019-2020 Michael Truog</p>
 
-<p><b>Version:</b> 2.0.1 Nov 26 2020 17:53:26
+<p><b>Version:</b> 2.0.1 Dec 3 2021 19:11:42
   ------------------------------------------------------------------------</p>
 <p><b>Authors:</b> Michael Truog (<a href="mailto:mjtruog at protonmail dot com"><tt>mjtruog at protonmail dot com</tt></a>).</p>
 
@@ -149,6 +149,7 @@ day-of-week field corresponds to the third Friday of every month.</p>
 <h3 class="function"><a name="expression-1">expression/1</a></h3>
 <div class="spec">
 <p><tt>expression(Cloudi_cron::<a href="#type-state">state()</a>) -&gt; nonempty_string()</tt><br></p>
+<p> </p>
 </div><p>
   <h4><a name="Provide_the_cron_expression_string.">Provide the cron expression string.</a></h4>
 </p>
@@ -156,6 +157,7 @@ day-of-week field corresponds to the third Friday of every month.</p>
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
 <p><tt>new(Input::nonempty_string()) -&gt; <a href="#type-state">state()</a></tt><br></p>
+<p> </p>
 </div><p>
   <h4><a name="Create_a_parsed_representation_of_a_cron_expression.">Create a parsed representation of a cron expression.</a></h4>
 </p>
@@ -163,6 +165,7 @@ day-of-week field corresponds to the third Friday of every month.</p>
 <h3 class="function"><a name="next_datetime-2">next_datetime/2</a></h3>
 <div class="spec">
 <p><tt>next_datetime(DateTime::<a href="calendar.html#type-datetime">calendar:datetime()</a>, Cloudi_cron::<a href="#type-state">state()</a>) -&gt; <a href="calendar.html#type-datetime">calendar:datetime()</a> | undefined</tt><br></p>
+<p> </p>
 </div><p>
   <h4><a name="Determine_the_next_datetime_based_on_the_cron_expression.">Determine the next datetime based on the cron expression.</a></h4>
 </p>
