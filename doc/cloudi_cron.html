@@ -14,9 +14,9 @@
    <h3><a name="CloudI_Cron_Expression_Functionality">CloudI Cron Expression Functionality</a></h3>
    The special character ? and the @reboot macro are not supported
    because they wouldn't work well with Erlang process restarts.
-<p>Copyright © 2019-2020 Michael Truog</p>
+<p>Copyright © 2019-2023 Michael Truog</p>
 
-<p><b>Version:</b> 2.0.1 Oct 11 2022 21:08:53
+<p><b>Version:</b> 2.0.6 Jun 20 2023 19:11:23
   ------------------------------------------------------------------------</p>
 <p><b>Authors:</b> Michael Truog (<a href="mailto:mjtruog at protonmail dot com"><tt>mjtruog at protonmail dot com</tt></a>).</p>
 
@@ -29,13 +29,13 @@
    (info from https://en.wikipedia.org/wiki/Cron#CRON_expression):
    <pre>   Field name     Required     Allowed values    Allowed special characters
    ----------     --------     --------------    --------------------------
-   Seconds        No           0-59              * / , -
-   Minutes        Yes          0-59              * / , -
-   Hours          Yes          0-23              * / , -
-   Day of month   Yes          1-31              * / , - L W
-   Month          Yes          1-12 or JAN-DEC   * / , -
-   Day of week    Yes          0-6 or SUN-SAT    * / , - L #
-   Year           No           1970–9999         * / , -</pre>
+   Seconds        No           0-59              * / , - ~
+   Minutes        Yes          0-59              * / , - ~
+   Hours          Yes          0-23              * / , - ~
+   Day of month   Yes          1-31              * / , - ~ L W
+   Month          Yes          1-12 or JAN-DEC   * / , - ~
+   Day of week    Yes          0-6 or SUN-SAT    * / , - ~ L #
+   Year           No           1970–9999         * / , - ~</pre>
   
    <h4><a name="Asterisk_(*)">Asterisk (*)</a></h4><p>   
 An asterisk indicates that the cron expression matches for all values   
@@ -52,7 +52,22 @@ Mondays, Wednesdays and Fridays.</p>
   
    <h4><a name="Hyphen_(-)">Hyphen (-)</a></h4><p>   
 Hyphens define ranges. For example, 2000–2010 indicates every year   
-between 2000 and 2010, inclusive.</p>
+between 2000 and 2010 inclusive.</p>
+  
+   <h4><a name="Tilde_(~)">Tilde (~)</a></h4><p>   
+Tildes define random ranges. For example, 0~59 will result in a random   
+value between 0 and 59 inclusive.</p>
+  
+   <p>A random range can be used with a step value. For example, 0~59/10 will   
+use a random offset for the first sequence value between 0 and 9 inclusive.   
+The field's min/max values may be used by excluding the random range   
+values as ~ or ~/10.</p>
+  
+   <p>Random values are determined when the expression is parsed with the   
+random value remaining constant afterwards.  The purpose of the randomness   
+is to avoid any thundering herd problems between separate uses of   
+similar cron expressions   
+(https://en.wikipedia.org/wiki/Thundering_herd_problem).</p>
   
    <h4><a name="L">L</a></h4><p>   
 'L' stands for "last". When used in the day-of-week field, it allows you   
@@ -92,7 +107,8 @@ day-of-week field corresponds to the third Friday of every month.</p>
    * The range for the day-of-week field is 0-7 instead of 0-6,
      with 7 as Sunday (like 0) (BSD and ATT disagreed about this in the past)
    * The month names are case-insensitive
-   * The day-of-week names are case-insensitive</pre>
+   * The day-of-week names are case-insensitive
+   * Random range support (with ~) is based on OpenBSD cron</pre>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-expression">expression()</a></h3>
